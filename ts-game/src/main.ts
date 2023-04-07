@@ -30,7 +30,7 @@ const setupCanvas = (canvas: HTMLCanvasElement) => {
   return ctx
 }
 
-const CIRCLE_RADIUS = 10
+const CIRCLE_RADIUS = GAME_SIZE / 40
 
 const drawCircle = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
   ctx.beginPath()
@@ -97,10 +97,15 @@ const ENEMY_DISTANCE = GAME_SIZE / ENEMY_AMOUNT
 
 const enemies = (roundY: number) => {
   const groupOffset = Math.floor(roundY / ENEMY_DISTANCE)
-  return range(ENEMY_AMOUNT + 2).map((i) => [
-    GAME_SIZE * random(i + groupOffset),
-    400 + (roundY % ENEMY_DISTANCE) - ENEMY_DISTANCE * i,
-  ])
+  const result = range(ENEMY_AMOUNT + CIRCLE_RADIUS / ENEMY_DISTANCE + 1).map(
+    (i) => [
+      GAME_SIZE * random(i + groupOffset),
+      400 + (roundY % ENEMY_DISTANCE) - ENEMY_DISTANCE * i,
+    ]
+  )
+  const amountToSkip =
+    groupOffset < ENEMY_AMOUNT ? ENEMY_AMOUNT - groupOffset + 1 : 0
+  return result.slice(amountToSkip)
 }
 
 const drawTextLines = (lines: string[], ctx: CanvasRenderingContext2D) => {
